@@ -1,0 +1,80 @@
+# Sensitive configuration files
+config.py
+*.backup
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+auction_scraper.log
+
+# Output files
+scraper_output/
+*.txt
+!requirements.txt
+!setup_instructions.md
+
+# Images
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+
+# Selenium
+chromedriver
+geckodriver
+*.exe
+
+# WebDriver cache
+.wdm/
+
+# OS
+Thumbs.db
+.DS_Store
