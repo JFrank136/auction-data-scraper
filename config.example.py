@@ -48,7 +48,7 @@ PRIORITY_1_LOCATIONS = [
 
 # Auction filters - updated to match BidFTA structure
 FILTERS = {
-    'condition': ['Appears New', 'Brand New'],  # Only these conditions
+    'condition': ['New', 'Appears New', 'Brand New'],  # Only these conditions
     'locations': CINCINNATI_LOCATIONS,  # All Cincinnati locations
     'days_to_end': 7,  # Auctions ending within this many days from Sunday
     'ended': False,  # Only active auctions
