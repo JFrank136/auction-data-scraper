@@ -23,22 +23,10 @@ from config import SEARCH_TERMS, FILTERS, SCRAPING_CONFIG, CINCINNATI_LOCATIONS,
 
 class BidFTAScraper:
     def __init__(self):
-        self.setup_logging()
+        self.logger = logging.getLogger(__name__)
         self.setup_directories()
         self.driver = None
         self.base_url = "https://www.bidft.auction"
-        
-    def setup_logging(self):
-        """Setup logging configuration"""
-        logging.basicConfig(
-            level=logging.INFO,
-            format='%(asctime)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.FileHandler('auction_scraper.log'),
-                logging.StreamHandler()
-            ]
-        )
-        self.logger = logging.getLogger(__name__)
         
     def setup_directories(self):
         """Create necessary directories"""
@@ -271,7 +259,7 @@ class BidFTAScraper:
             # Wait for page to load
             time.sleep(8)
             
-            self.logger.info(f"Page loaded: {self.driver.current_url}")
+            self.logger.info(f"Page loaded for '{search_term}'")
             
             # Wait for the results table to load
             try:
