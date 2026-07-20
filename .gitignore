@@ -1,6 +1,8 @@
 # Sensitive configuration files
 config.py
 *.backup
+scraper.lock
+BidFTA.xlsx
 
 # Python
 __pycache__/
@@ -45,6 +47,7 @@ env/
 # Logs
 *.log
 logs/
+log/
 auction_scraper.log
 
 # Output files

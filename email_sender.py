@@ -2,7 +2,6 @@ import smtplib
 import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from email.mime.image import MIMEImage
 from datetime import datetime
 from typing import List, Dict
 import os
@@ -336,12 +335,7 @@ class EmailSender:
                 image_html = ""
                 auction_url_safe = auction.get('url', '#')
                 
-                if auction.get('image_path') and os.path.exists(auction['image_path']):
-                    image_html = f'''
-                    <a href="{auction_url_safe}" class="image-link">
-                        <img src="cid:image_{hash(auction.get("url", ""))}" class="auction-image" alt="Auction item">
-                    </a>'''
-                elif auction.get('image_url'):
+                if auction.get('image_url'):
                     # For external images, make sure they're properly formatted
                     img_url = auction['image_url']
                     if img_url and not img_url.startswith(('http://', 'https://')):
@@ -408,7 +402,7 @@ class EmailSender:
         html += f"""
                 <div class="footer">
                     <p>Generated on {datetime.now().strftime('%Y-%m-%d at %I:%M %p')}</p>
-                    <p>Auctions ending Sunday-Saturday this week</p>
+                    <p>Auctions ending Monday-Sunday this week</p>
                 </div>
             </div>
         </body>
@@ -556,7 +550,7 @@ class EmailSender:
         """Send the weekly auction report email"""
         try:
             # Create message
-            msg = MIMEMultipart('related')
+            msg = MIMEMultipart('alternative')
             msg['From'] = EMAIL_CONFIG['sender_email']
             msg['To'] = EMAIL_CONFIG['recipient_email']
             
@@ -569,19 +563,6 @@ class EmailSender:
             # Generate HTML content
             html_content = self.generate_html_email(auctions)
             msg.attach(MIMEText(html_content, 'html'))
-            
-            # Attach images
-            for auction in auctions:
-                image_path = auction.get('image_path')
-                if image_path and os.path.exists(image_path):
-                    try:
-                        with open(image_path, 'rb') as f:
-                            img_data = f.read()
-                        image = MIMEImage(img_data)
-                        image.add_header('Content-ID', f'<image_{hash(auction.get("url", ""))}>')
-                        msg.attach(image)
-                    except Exception as e:
-                        self.logger.warning(f"Failed to attach image {image_path}: {str(e)}")
             
             # Send email
             with smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port']) as server:

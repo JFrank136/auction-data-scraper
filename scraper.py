@@ -54,37 +54,37 @@ class BidFTAScraper:
             self.driver.quit()
             
     def get_week_date_range(self):
-        """Calculate this week's Sunday to Sunday date range (includes full weekend)"""
+        """Calculate this week's Monday to Sunday date range (includes full weekend)"""
         now = datetime.now()
-        
-        # Find this Sunday (start of week)
-        days_since_sunday = (now.weekday() + 1) % 7  # Monday=0, Sunday=6, convert to Sunday=0
-        sunday = now - timedelta(days=days_since_sunday)
-        
-        # Find next Sunday (end of week) - this includes Saturday auctions
-        next_sunday = sunday + timedelta(days=7)
-        
+
+        # Find this Monday (start of week)
+        days_since_monday = now.weekday()  # Monday=0, Sunday=6
+        monday = now - timedelta(days=days_since_monday)
+
+        # Find next Monday - olderThan is exclusive, so this includes Sunday auctions
+        next_monday = monday + timedelta(days=7)
+
         # Format for BidFT (they seem to use ISO format with T04:00:00.000Z)
-        sunday_str = sunday.strftime('%Y-%m-%dT04:00:00.000Z')
-        next_sunday_str = next_sunday.strftime('%Y-%m-%dT04:00:00.000Z')
-        
-        self.logger.info(f"Week range: {sunday.strftime('%Y-%m-%d')} to {next_sunday.strftime('%Y-%m-%d')} (includes Saturday)")
-        
-        return sunday_str, next_sunday_str
+        monday_str = monday.strftime('%Y-%m-%dT04:00:00.000Z')
+        next_monday_str = next_monday.strftime('%Y-%m-%dT04:00:00.000Z')
+
+        self.logger.info(f"Week range: {monday.strftime('%Y-%m-%d')} to {(monday + timedelta(days=6)).strftime('%Y-%m-%d')} (includes Sunday)")
+
+        return monday_str, next_monday_str
             
     def build_search_url(self, search_term: str) -> str:
         """Build the encoded search URL like BidFT uses"""
         
-        sunday_str, next_sunday_str = self.get_week_date_range()
-        
+        monday_str, next_monday_str = self.get_week_date_range()
+
         # Build the search parameters object
         search_params = {
             "searchTerm": search_term,
             "locations": CINCINNATI_LOCATIONS,
             "conditions": FILTERS['condition'],
             "sort": "DATE_ASC",  # Oldest first, like in your screenshot
-            "newerThan": sunday_str,  # Ends after Sunday
-            "olderThan": next_sunday_str,  # Ends before next Sunday (includes Saturday)
+            "newerThan": monday_str,  # Ends after Monday
+            "olderThan": next_monday_str,  # Ends before next Monday (includes Sunday)
             "ended": False  # Only active auctions
         }
         
